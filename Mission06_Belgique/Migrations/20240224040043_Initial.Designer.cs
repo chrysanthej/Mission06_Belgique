@@ -10,7 +10,7 @@ using Mission06_Belgique.Models;
 namespace Mission06_Belgique.Migrations
 {
     [DbContext(typeof(MovieSubmissionContext))]
-    [Migration("20240215004547_Initial")]
+    [Migration("20240224040043_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -19,30 +19,58 @@ namespace Mission06_Belgique.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
 
-            modelBuilder.Entity("Mission06_Belgique.Models.MovieSubmit", b =>
+            modelBuilder.Entity("Mission06_Belgique.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CategoryID");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryID = 1,
+                            CategoryName = "RomCom"
+                        },
+                        new
+                        {
+                            CategoryID = 2,
+                            CategoryName = "Horror"
+                        },
+                        new
+                        {
+                            CategoryID = 3,
+                            CategoryName = "Action"
+                        });
+                });
+
+            modelBuilder.Entity("Mission06_Belgique.Models.Movie", b =>
                 {
                     b.Property<int>("MovieId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Director")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Edited")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LentTo")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Notes")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Rating")
@@ -59,7 +87,20 @@ namespace Mission06_Belgique.Migrations
 
                     b.HasKey("MovieId");
 
+                    b.HasIndex("CategoryID");
+
                     b.ToTable("MovieSubmits");
+                });
+
+            modelBuilder.Entity("Mission06_Belgique.Models.Movie", b =>
+                {
+                    b.HasOne("Mission06_Belgique.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }
